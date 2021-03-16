@@ -22,7 +22,7 @@ public class BetController {
 
     @GetMapping(value = "/freebet", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity getOptimalFreeBet(@RequestParam(value = "book") String book,
+    public ResponseEntity<OptimalFreeBetResponse> getOptimalFreeBet(@RequestParam(value = "book") String book,
                                             @RequestHeader(value = "apiKey") String apiKey) {
         List<Game> allGameOdds = oddsService.getAllGameOdds(apiKey, book);
 
@@ -35,7 +35,8 @@ public class BetController {
             for (Map.Entry<String, Integer> entry : game.getSiteOdds().entrySet()) {
                 Integer currentBookOdds = entry.getValue();
                 int difference = underdogOdds + currentBookOdds;
-                if (difference > -100 && Math.abs(difference) < Math.abs(optimalFreeBet.getDifference())) {
+                int currentOptimalFreeBetDifference = optimalFreeBet.getDifference()
+                if (Math.abs(difference) < Math.abs(currentOptimalFreeBetDifference)) {
                     optimalFreeBet.setDifference(difference);
                     optimalFreeBet.setOppositeSite(entry.getKey());
                     optimalFreeBet.setOppositeSiteOdds(currentBookOdds);

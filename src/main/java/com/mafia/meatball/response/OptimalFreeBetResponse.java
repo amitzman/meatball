@@ -1,14 +1,14 @@
 package com.mafia.meatball.response;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OptimalFreeBetResponse {
     Integer difference;
     String freeBetSite;
