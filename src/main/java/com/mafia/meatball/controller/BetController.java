@@ -35,7 +35,7 @@ public class BetController {
             for (Map.Entry<String, Integer> entry : game.getSiteOdds().entrySet()) {
                 Integer currentBookOdds = entry.getValue();
                 int difference = underdogOdds + currentBookOdds;
-                int currentOptimalFreeBetDifference = optimalFreeBet.getDifference()
+                int currentOptimalFreeBetDifference = optimalFreeBet.getDifference();
                 if (Math.abs(difference) < Math.abs(currentOptimalFreeBetDifference)) {
                     optimalFreeBet.setDifference(difference);
                     optimalFreeBet.setOppositeSite(entry.getKey());
