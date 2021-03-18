@@ -17,4 +17,9 @@ public class OptimalFreeBetResponse {
     Integer oppositeSiteOdds;
     String sport;
     List<String> teams;
+
+    public OptimalFreeBetResponse(String freeBetSite) {
+        this.freeBetSite = freeBetSite;
+        this.difference = -1000;
+    }
 }

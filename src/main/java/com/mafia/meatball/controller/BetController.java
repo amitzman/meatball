@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @EnableWebMvc
 public class BetController {
-    private OddsService oddsService;
+    private final OddsService oddsService;
 
     public BetController(OddsService oddsService) {
         this.oddsService = oddsService;
@@ -26,17 +26,18 @@ public class BetController {
                                             @RequestHeader(value = "apiKey") String apiKey) {
         List<Game> allGameOdds = oddsService.getAllGameOdds(apiKey, book);
 
-        OptimalFreeBetResponse optimalFreeBet = new OptimalFreeBetResponse();
-        optimalFreeBet.setDifference(500);
-        optimalFreeBet.setFreeBetSite(book);
+        OptimalFreeBetResponse optimalFreeBet = new OptimalFreeBetResponse(book);
 
         for (Game game : allGameOdds) {
             Integer underdogOdds = game.getSiteOdds().get(book);
             for (Map.Entry<String, Integer> entry : game.getSiteOdds().entrySet()) {
+                if(entry.getKey().equals(book)) {
+                    continue;
+                }
                 Integer currentBookOdds = entry.getValue();
                 int difference = underdogOdds + currentBookOdds;
                 int currentOptimalFreeBetDifference = optimalFreeBet.getDifference();
-                if (Math.abs(difference) < Math.abs(currentOptimalFreeBetDifference)) {
+                if ((difference >= 0 && difference > currentOptimalFreeBetDifference) || Math.abs(difference) < Math.abs(currentOptimalFreeBetDifference)) {
                     optimalFreeBet.setDifference(difference);
                     optimalFreeBet.setOppositeSite(entry.getKey());
                     optimalFreeBet.setOppositeSiteOdds(currentBookOdds);

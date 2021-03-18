@@ -44,7 +44,13 @@ public class OddsService {
                     OddsResponse.class);
 
 
-            List<String> accepetedSites = Arrays.asList("William Hill (US)", "FanDuel", "DraftKings", "PointsBet (US)", "BetMGM", "BetRivers");
+            List<String> accepetedSites = Arrays.asList(
+                    "William Hill (US)",
+                    "FanDuel",
+                    "DraftKings",
+                    "PointsBet (US)",
+                    "BetMGM",
+                    "BetRivers");
             assert response != null;
             if (response.getData() != null && response.getData().size() != 0) {
                 response.getData().forEach(game -> {

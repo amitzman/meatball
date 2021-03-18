@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,52 @@ class BetControllerTest {
                 .oppositeSiteOdds(-410)
                 .sport("BaseketBall")
                 .teams(Arrays.asList("Donkeyballs", "Firemen"))
+                .build();
+
+        ResponseEntity<OptimalFreeBetResponse> actual = betController.getOptimalFreeBet(freeBetSite, apiKey);
+
+        assertEquals(actual.getBody().getDifference(), expected.getDifference());
+        assertEquals(actual.getBody().getFreeBetOdds(), expected.getFreeBetOdds());
+        assertEquals(actual.getBody().getFreeBetSite(), expected.getFreeBetSite());
+        assertEquals(actual.getBody().getOppositeSite(), expected.getOppositeSite());
+        assertEquals(actual.getBody().getOppositeSiteOdds(), expected.getOppositeSiteOdds());
+        assertEquals(actual.getBody().getSport(), expected.getSport());
+        assertEquals(actual.getBody().getTeams(), expected.getTeams());
+    }
+
+    @Test
+    void getOptimalFreeBet_whenDifferenceIsPositive() {
+        String freeBetSite = "William Mitz";
+        HashMap<String, Integer> game1siteOdds = new HashMap<>();
+
+        game1siteOdds.put(freeBetSite, 220);
+        game1siteOdds.put("Meatball Kings", -290);
+        game1siteOdds.put("Teaser Tim", -215);
+        game1siteOdds.put("Big Game Greg", -265);
+
+        Game game = Game.builder()
+                .sport("Basketball")
+                .teams(Arrays.asList("Pacers", "Bulls"))
+                .siteOdds(game1siteOdds)
+                .build();
+
+        String apiKey = "test";
+
+        List<Game> games = generateGames(freeBetSite);
+        ArrayList<Game> games1 = new ArrayList<>(games);
+        games1.add(game);
+
+        when(oddsService.getAllGameOdds(apiKey, freeBetSite))
+                .thenReturn(games1);
+
+        OptimalFreeBetResponse expected = OptimalFreeBetResponse.builder()
+                .difference(5)
+                .freeBetSite(freeBetSite)
+                .freeBetOdds(220)
+                .oppositeSite("Teaser Tim")
+                .oppositeSiteOdds(-215)
+                .sport("Basketball")
+                .teams(Arrays.asList("Pacers", "Bulls"))
                 .build();
 
         ResponseEntity<OptimalFreeBetResponse> actual = betController.getOptimalFreeBet(freeBetSite, apiKey);
